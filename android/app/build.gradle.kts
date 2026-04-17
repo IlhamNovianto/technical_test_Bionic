@@ -1,36 +1,23 @@
-plugins {
-    id("com.android.application")
-    // START: FlutterFire Configuration
-    id("com.google.gms.google-services")
-    // END: FlutterFire Configuration
-    id("kotlin-android")
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
-    id("dev.flutter.flutter-gradle-plugin")
-}
-
 import java.util.Properties
 import java.io.FileInputStream
 
-val keystoreProperties = Properties()
+// ── Load keystore properties ──────────────────────────────────
 val keystorePropertiesFile = rootProject.file("key.properties")
-
+val keystoreProperties = Properties()
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
+plugins {
+    id("com.android.application")
+    id("kotlin-android")
+    id("dev.flutter.flutter-gradle-plugin")
+}
+
 android {
-    namespace = "com.example.technical_test"
+    namespace = "com.yourcompany.technical_test"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
-
-    signingConfigs {
-    create("release") {
-        keyAlias = keystoreProperties["keyAlias"] as String
-        keyPassword = keystoreProperties["keyPassword"] as String
-        storeFile = file(keystoreProperties["storeFile"] as String)
-        storePassword = keystoreProperties["storePassword"] as String
-    }
-}
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -38,42 +25,37 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
+        // ✅ Fix: gunakan compilerOptions bukan jvmTarget langsung
+        jvmTarget = "17"
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.technical_test"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        applicationId = "com.yourcompany.technical_test"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
-        signingConfigs {
-        release {
-            keyAlias     keystoreProperties['keyAlias']
-            keyPassword  keystoreProperties['keyPassword']
-            storeFile    keystoreProperties['storeFile'] ?
-                         file(keystoreProperties['storeFile']) : null
-            storePassword keystoreProperties['storePassword']
+    // ✅ Fix: Kotlin DSL syntax untuk signingConfigs
+    signingConfigs {
+        create("release") {
+            keyAlias      = keystoreProperties["keyAlias"] as String?
+            keyPassword   = keystoreProperties["keyPassword"] as String?
+            storePassword = keystoreProperties["storePassword"] as String?
+            storeFile     = keystoreProperties["storeFile"]?.let { file(it) }
         }
     }
 
     buildTypes {
-        release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            // signingConfig = signingConfigs.getByName("debug")
-            signingConfig = signingConfigs.getByName("release")
+        // ✅ Fix: gunakan getByName bukan release langsung
+        getByName("release") {
+            signingConfig   = signingConfigs.getByName("release")
             isMinifyEnabled = false
-        i   sShrinkResources = false
-            }
+            isShrinkResources = false
         }
     }
-
+}
 
 flutter {
     source = "../.."

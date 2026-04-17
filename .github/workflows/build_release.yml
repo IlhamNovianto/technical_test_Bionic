@@ -24,13 +24,14 @@ jobs:
             - name: Setup Flutter
               uses: subosito/flutter-action@v2
               with:
-                  flutter-version: "3.41.7"
+                  flutter-version: "3.24.0"
                   channel: "stable"
                   cache: true
 
             - name: Install dependencies
               run: flutter pub get
 
+            # ── Restore file sensitif ────────────────────────────────
             - name: Restore google-services.json
               run: |
                   echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode \
@@ -41,11 +42,17 @@ jobs:
                   echo "${{ secrets.FIREBASE_OPTIONS_BASE64 }}" | base64 --decode \
                     > lib/firebase_options.dart
 
-            - name: Inject NewsAPI Key
+            # ✅ Buat env.json dari secrets
+            - name: Buat env.json
               run: |
-                  sed -i "s/YOUR_NEWS_API_KEY/${{ secrets.NEWS_API_KEY }}/g" \
-                    lib/core/constants/api_constants.dart
+                  cat > env.json << EOF
+                  {
+                    "NEWS_API_KEY": "${{ secrets.NEWS_API_KEY }}",
+                    "BASE_URL": "https://newsapi.org/v2"
+                  }
+                  EOF
 
+            # ── Restore Keystore ─────────────────────────────────────
             - name: Restore Keystore
               run: |
                   echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode \
@@ -60,14 +67,18 @@ jobs:
                   storeFile=upload-keystore.jks
                   EOF
 
+            # ── Build ─────────────────────────────────────────────────
             - name: Analyze kode
               run: flutter analyze --no-fatal-infos
 
             - name: Run unit tests
               run: flutter test test/
 
+            # ✅ Inject env.json saat build menggunakan --dart-define-from-file
             - name: Build release APK
-              run: flutter build apk --release
+              run: |
+                  flutter build apk --release \
+                    --dart-define-from-file=env.json
 
             - name: Rename APK
               run: |
