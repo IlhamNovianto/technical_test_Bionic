@@ -17,7 +17,7 @@ class LoginPage extends StatelessWidget {
             height: MediaQuery.of(context).size.height * 0.55,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Colors.white, ?Colors.blue[900]],
+                colors: [Colors.white, Colors.blue[900]!],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
@@ -150,7 +150,6 @@ class LoginPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-
                       child: controller.isLoadingAnn.value
                           ? const SizedBox(
                               height: 20,
