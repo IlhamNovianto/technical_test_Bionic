@@ -17,7 +17,8 @@ plugins {
 android {
     namespace = "com.yourcompany.technical_test"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973"
+
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -31,7 +32,7 @@ android {
 
     defaultConfig {
         applicationId = "com.yourcompany.technical_test"
-        minSdk = flutter.minSdkVersion
+        minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
