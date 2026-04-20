@@ -102,7 +102,7 @@ jobs:
                   tag_name: v${{ env.VERSION }}-${{ github.run_number }}
                   name: "Release v${{ env.VERSION }}"
                   body: |
-                      ## Release Otomatis 🚀
+
 
                       **Versi:** ${{ env.VERSION }}
                       **Commit:** ${{ github.sha }}
