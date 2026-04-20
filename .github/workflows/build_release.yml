@@ -95,30 +95,23 @@ jobs:
           path: build/app/outputs/flutter-apk/*.apk
           retention-days: 30
 
-      # - name: Create GitHub Release
-      #   uses: softprops/action-gh-release@v2
-      #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      #   with:
-      #       tag_name: v${{ env.VERSION }}-${{ github.run_number }}
-      #       name: "Release v${{ env.VERSION }}"
-      #       body: |
-
-
-      #           **Versi:** ${{ env.VERSION }}
-      #           **Commit:** ${{ github.sha }}
-
-      #           ### Perubahan
-      #           ${{ github.event.head_commit.message }}
-
-      #           ### Download APK
-      #           Download APK di bagian **Assets** di bawah.
-      #       files: build/app/outputs/flutter-apk/*.apk
-      #   env:
-      #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Create GitHub Release
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         with:
-          files: build/app/outputs/flutter-apk/app-release.apk
-          generate_release_notes: true
+          tag_name: v${{ env.VERSION }}-${{ github.run_number }}
+          name: "Release v${{ env.VERSION }}"
+          body: |
+            
+
+            **Versi:** ${{ env.VERSION }}
+            **Commit:** ${{ github.sha }}
+
+            ### Perubahan
+            ${{ github.event.head_commit.message }}
+
+            ### Download APK
+            Download APK di bagian **Assets** di bawah.
+          files: build/app/outputs/flutter-apk/*.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
