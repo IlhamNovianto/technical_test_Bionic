@@ -35,7 +35,6 @@ class ProfilePage extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -153,13 +152,12 @@ class ProfilePage extends StatelessWidget {
                           : Icons.light_mode_rounded,
                       iconColor: const Color(0xFF6C3EE8),
                       title: 'Tampilan',
-                      subtitle: themeController.isDark
-                          ? 'Mode Gelap'
-                          : 'Mode Terang',
+                      subtitle:
+                          themeController.isDark ? 'Mode Gelap' : 'Mode Terang',
                       trailing: Switch(
                         value: themeController.isDark,
                         onChanged: (_) => themeController.toggleTheme(),
-                        activeThumbColor: const Color(0xFF6C3EE8),
+                        activeColor: const Color(0xFF6C3EE8),
                       ),
                     ),
                   ),
