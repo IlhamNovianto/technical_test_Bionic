@@ -1,6 +1,4 @@
 class ApiConstants {
-  // static const String baseUrl = 'https://newsapi.org/v2';
-
   static const String baseUrl = String.fromEnvironment('BASE_URL');
   static const String apiKey = String.fromEnvironment(
     'NEWS_API_KEY',
@@ -25,5 +23,3 @@ class ApiConstants {
     'Technology',
   ];
 }
-
-//'2b0692bfff6e452e89fb017fbba65750';
