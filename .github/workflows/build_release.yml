@@ -6,10 +6,17 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   build:
     name: Build Release APK
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout kode
@@ -31,7 +38,6 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # ── Restore file sensitif ────────────────────────────────
       - name: Restore google-services.json
         run: |
           echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode \
@@ -42,7 +48,6 @@ jobs:
           echo "${{ secrets.FIREBASE_OPTIONS_BASE64 }}" | base64 --decode \
             > lib/firebase_options.dart
 
-      # ✅ Buat env.json dari secrets
       - name: Buat env.json
         run: |
           cat > env.json << EOF
@@ -52,7 +57,6 @@ jobs:
           }
           EOF
 
-      # ── Restore Keystore ─────────────────────────────────────
       - name: Restore Keystore
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode \
@@ -67,14 +71,12 @@ jobs:
           storeFile=upload-keystore.jks
           EOF
 
-      # ── Build ─────────────────────────────────────────────────
       - name: Analyze kode
         run: flutter analyze --no-fatal-infos
 
       - name: Run unit tests
         run: flutter test test/
 
-      # ✅ Inject env.json saat build menggunakan --dart-define-from-file
       - name: Build release APK
         run: |
           flutter build apk --release \
@@ -102,7 +104,7 @@ jobs:
           tag_name: v${{ env.VERSION }}-${{ github.run_number }}
           name: "Release v${{ env.VERSION }}"
           body: |
-            
+            ## Release Otomatis 🚀
 
             **Versi:** ${{ env.VERSION }}
             **Commit:** ${{ github.sha }}
@@ -113,5 +115,5 @@ jobs:
             ### Download APK
             Download APK di bagian **Assets** di bawah.
           files: build/app/outputs/flutter-apk/*.apk
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # ✅ Tambahkan ini
+          token: ${{ secrets.GITHUB_TOKEN }}
